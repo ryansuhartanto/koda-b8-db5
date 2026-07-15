@@ -151,7 +151,10 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 
 	input := scanValue(scanner, "Name")
 	if input == nil {
-		fmt.Fprintln(os.Stderr, "Name cannot be empty")
+		fmt.Fprintln(os.Stderr, "Name cannot be empty.")
+		fmt.Print("Enter to continue... ")
+		scanner.Scan()
+		return
 	}
 
 	dob = scanDate(scanner, "DOB (2006-01-02)")
