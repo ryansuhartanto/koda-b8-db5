@@ -184,6 +184,10 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 		args,
 	)
 	if err != nil {
-		log.Fatal("Failed at executing", err)
+		log.Fatalln("Failed at executing", err)
 	}
+
+	fmt.Println("Success!")
+	fmt.Print("Enter to continue... ")
+	scanner.Scan()
 }
