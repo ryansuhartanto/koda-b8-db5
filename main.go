@@ -235,7 +235,7 @@ func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
 
 	_, err := conn.Exec(
 		context.Background(),
-		`DELETE FROM "contacts" WHERE id = @id`,
+		`DELETE FROM "contacts" WHERE "id" = @id`,
 		args,
 	)
 	if err != nil {
