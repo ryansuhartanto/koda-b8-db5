@@ -10,6 +10,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
+	"github.com/nleeper/goment"
 	"github.com/ryansuhartanto/koda-b8-db5/models"
 )
 
@@ -63,9 +64,26 @@ loop:
 				log.Fatal("Failed at collecting", err)
 			}
 
-			fmt.Println(entries)
+			for index, entry := range entries {
+				g, _ := goment.New(entry.UpdatedAt)
 
-			fmt.Println()
+				fmt.Printf("%d. (Last updated: %v)\n", index, g.FromNow())
+				fmt.Printf("Name: %v\n", entry.Name)
+				if entry.Dob != nil {
+					fmt.Printf("Dob: %v\n", entry.Dob.Format("2006-01-02"))
+				}
+				if entry.Address != nil {
+					fmt.Printf("Address: %v\n", *entry.Address)
+				}
+				if entry.Phone != nil {
+					fmt.Printf("Phone: %v\n", *entry.Phone)
+				}
+				if entry.Email != nil {
+					fmt.Printf("Email: %v\n", *entry.Email)
+				}
+				fmt.Println()
+			}
+
 			fmt.Print("Enter to continue... ")
 			scanner.Scan()
 

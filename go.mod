@@ -7,5 +7,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.10.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/nleeper/goment v1.4.4 // indirect
+	github.com/tkuchiki/go-timezone v0.2.3 // indirect
 	golang.org/x/text v0.40.0 // indirect
 )
