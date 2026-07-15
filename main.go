@@ -49,12 +49,11 @@ loop:
 		scanner.Scan()
 		input := scanner.Text()
 
+		fmt.Print("\033c")
 		selection, err := strconv.Atoi(input)
 		if err != nil {
 			continue
 		}
-
-		fmt.Println()
 
 		switch selection {
 		case 1:
