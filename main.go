@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// PostgreSQL
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	conn, err := pgx.Connect(context.Background(), "")
 	if err != nil {
 		log.Fatal("Unable to connect to database", err)
 	}
