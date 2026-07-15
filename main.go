@@ -53,8 +53,15 @@ loop:
 
 		switch selection {
 		case 1:
-			rows, _ := conn.Query(context.Background(), `SELECT * FROM "contacts"`)
-			entries, _ := pgx.CollectRows(rows, pgx.RowToStructByName[models.Contact])
+			rows, err := conn.Query(context.Background(), `SELECT * FROM "contacts"`)
+			if err != nil {
+				log.Fatal("Failed at querying", err)
+			}
+
+			entries, err := pgx.CollectRows(rows, pgx.RowToStructByName[models.Contact])
+			if err != nil {
+				log.Fatal("Failed at collecting", err)
+			}
 
 			fmt.Println(entries)
 
