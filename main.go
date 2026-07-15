@@ -194,7 +194,7 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 	scanner.Scan()
 }
 
-func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
+func selectId(conn *pgx.Conn, scanner *bufio.Scanner) *int64 {
 	var id int64
 
 	for {
@@ -222,15 +222,25 @@ func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
 
 	if !exists {
 		fmt.Println("ID does not exist.")
+		fmt.Print("Enter to continue... ")
 		scanner.Scan()
+		return nil
+	}
+
+	return &id
+}
+
+func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
+	id := selectId(conn, scanner)
+	if id == nil {
 		return
 	}
 
 	args := pgx.NamedArgs{
-		"id": id,
+		"id": *id,
 	}
 
-	_, err = conn.Exec(
+	_, err := conn.Exec(
 		context.Background(),
 		`DELETE FROM "contacts" WHERE id = @id`,
 		args,
