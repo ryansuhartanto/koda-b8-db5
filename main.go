@@ -91,7 +91,7 @@ func list(conn *pgx.Conn, scanner *bufio.Scanner) {
 		fmt.Printf("%d. (Last updated: %v)\n", index, g.FromNow())
 		fmt.Printf("Name: %v\n", entry.Name)
 		if entry.Dob != nil {
-			fmt.Printf("Dob: %v\n", entry.Dob.Format("2006-01-02"))
+			fmt.Printf("DOB: %v\n", entry.Dob.Format("2006-01-02"))
 		}
 		if entry.Address != nil {
 			fmt.Printf("Address: %v\n", *entry.Address)
