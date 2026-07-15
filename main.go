@@ -60,6 +60,8 @@ loop:
 			list(conn, scanner)
 		case 2:
 			add(conn, scanner)
+		case 3:
+			edit(conn, scanner)
 		case 4:
 			delete(conn, scanner)
 
@@ -221,6 +223,89 @@ func selectId(conn *pgx.Conn, scanner *bufio.Scanner) *int64 {
 	}
 
 	return &id
+}
+
+func edit(conn *pgx.Conn, scanner *bufio.Scanner) {
+	id := selectId(conn, scanner)
+	if id == nil {
+		return
+	}
+
+	fmt.Print("" +
+		"1. Name\n" +
+		"2. DOB\n" +
+		"3. Address\n" +
+		"4. Phone\n" +
+		"5. Email\n" +
+		"\n",
+	)
+
+	fmt.Print("Input: ")
+	scanner.Scan()
+	input := scanner.Text()
+
+	var key string
+	args := pgx.NamedArgs{
+		"id": id,
+	}
+
+	selection, err := strconv.Atoi(input)
+	fmt.Println()
+	if err != nil {
+		goto no
+	}
+
+	switch selection {
+	case 1:
+		value := scanValue(scanner, "Name")
+		if value == nil {
+			fmt.Fprintln(os.Stderr, "Name cannot be empty.")
+			fmt.Print("Enter to continue... ")
+			scanner.Scan()
+			return
+		}
+		key = "name"
+		args["value"] = *value
+	case 2:
+		value := scanValue(scanner, "DOB (2006-01-02)")
+		key = "dob"
+		args["value"] = value
+	case 3:
+		value := scanValue(scanner, "Address")
+		key = "address"
+		args["value"] = value
+	case 4:
+		value := scanValue(scanner, "Phone")
+		key = "phone"
+		args["value"] = value
+	case 5:
+		value := scanValue(scanner, "Email")
+		key = "email"
+		args["value"] = value
+
+	default:
+		goto no
+	}
+
+	_, err = conn.Exec(
+		context.Background(),
+		fmt.Sprintf(`UPDATE "contacts" SET "%v" = @value WHERE "id" = @id`, key),
+		args,
+	)
+	if err != nil {
+		log.Fatalln("Failed at executing", err)
+	}
+
+	fmt.Println("Success!")
+	fmt.Print("Enter to continue... ")
+	scanner.Scan()
+
+	return
+
+no:
+	fmt.Println("Invalid selection!")
+	fmt.Print("Enter to continue... ")
+	scanner.Scan()
 }
 
 func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
