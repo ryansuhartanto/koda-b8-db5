@@ -110,7 +110,7 @@ func list(conn *pgx.Conn, scanner *bufio.Scanner) {
 }
 
 func scanValue(scanner *bufio.Scanner, prefix string) *string {
-	fmt.Print("%v: ", prefix)
+	fmt.Printf("%v: ", prefix)
 	scanner.Scan()
 	input := strings.TrimSpace(scanner.Text())
 	if input == "" {
@@ -122,7 +122,7 @@ func scanValue(scanner *bufio.Scanner, prefix string) *string {
 
 func scanDate(scanner *bufio.Scanner, prefix string) *time.Time {
 	for {
-		fmt.Print("%v: ", prefix)
+		fmt.Printf("%v: ", prefix)
 		scanner.Scan()
 		input := strings.TrimSpace(scanner.Text())
 		if input == "" {
