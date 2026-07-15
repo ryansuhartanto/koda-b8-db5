@@ -61,6 +61,8 @@ loop:
 			list(conn, scanner)
 		case 2:
 			add(conn, scanner)
+		case 4:
+			delete(conn, scanner)
 
 		case 0:
 			break loop
@@ -181,6 +183,56 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 		context.Background(),
 		`INSERT INTO "contacts" ("name", "dob", "address", "phone", "email") `+
 			`VALUES (@name, @dob, @address, @phone, @email)`,
+		args,
+	)
+	if err != nil {
+		log.Fatalln("Failed at executing", err)
+	}
+
+	fmt.Println("Success!")
+	fmt.Print("Enter to continue... ")
+	scanner.Scan()
+}
+
+func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
+	var id int64
+
+	for {
+		fmt.Print("ID: ")
+		scanner.Scan()
+		input := strings.TrimSpace(scanner.Text())
+
+		value, err := strconv.ParseInt(input, 10, 64)
+		if err != nil {
+			fmt.Fprint(os.Stderr, "Failed parse", err)
+			continue
+		}
+
+		id = value
+		break
+	}
+
+	var exists bool
+	err := conn.QueryRow(context.Background(), `SELECT EXISTS(SELECT 1 FROM "contacts" WHERE id = $1)`, id).Scan(&exists)
+	if err != nil {
+		log.Fatalln("Failed at ID checking", err)
+	}
+
+	fmt.Println()
+
+	if !exists {
+		fmt.Println("ID does not exist.")
+		scanner.Scan()
+		return
+	}
+
+	args := pgx.NamedArgs{
+		"id": id,
+	}
+
+	_, err = conn.Exec(
+		context.Background(),
+		`DELETE FROM "contacts" WHERE id = @id`,
 		args,
 	)
 	if err != nil {
