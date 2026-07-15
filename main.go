@@ -142,15 +142,6 @@ func scanDate(scanner *bufio.Scanner, prefix string) *time.Time {
 }
 
 func add(conn *pgx.Conn, scanner *bufio.Scanner) {
-	var (
-		name string
-		dob  *time.Time
-
-		address,
-		phone,
-		email *string
-	)
-
 	input := scanValue(scanner, "Name")
 	if input == nil {
 		fmt.Fprintln(os.Stderr, "Name cannot be empty.")
@@ -159,10 +150,11 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 		return
 	}
 
-	dob = scanDate(scanner, "DOB (2006-01-02)")
-	address = scanValue(scanner, "Address")
-	phone = scanValue(scanner, "Phone")
-	email = scanValue(scanner, "Email")
+	name := *input
+	dob := scanDate(scanner, "DOB (2006-01-02)")
+	address := scanValue(scanner, "Address")
+	phone := scanValue(scanner, "Phone")
+	email := scanValue(scanner, "Email")
 
 	fmt.Println()
 
