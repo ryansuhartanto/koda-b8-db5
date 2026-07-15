@@ -109,6 +109,36 @@ func list(conn *pgx.Conn, scanner *bufio.Scanner) {
 	scanner.Scan()
 }
 
+func scanValue(scanner *bufio.Scanner, prefix string) *string {
+	fmt.Print("%v: ", prefix)
+	scanner.Scan()
+	input := strings.TrimSpace(scanner.Text())
+	if input == "" {
+		return nil
+	}
+
+	return &input
+}
+
+func scanDate(scanner *bufio.Scanner, prefix string) *time.Time {
+	for {
+		fmt.Print("%v: ", prefix)
+		scanner.Scan()
+		input := strings.TrimSpace(scanner.Text())
+		if input == "" {
+			return nil
+		}
+
+		time, err := time.Parse("2006-01-02", input)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Failed parse", err)
+			continue
+		}
+
+		return &time
+	}
+}
+
 func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 	var (
 		name string
@@ -119,54 +149,15 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 		email *string
 	)
 
-	var input string
-
-	fmt.Print("Name: ")
-	scanner.Scan()
-	input = strings.TrimSpace(scanner.Text())
-	name = input
-
-	for {
-		fmt.Print("Dob (2006-01-02): ")
-		scanner.Scan()
-		input = strings.TrimSpace(scanner.Text())
-		if input == "" {
-			break
-		}
-
-		time, err := time.Parse("2006-01-02", input)
-		if err != nil {
-			fmt.Fprint(os.Stderr, "Failed parse", err)
-			continue
-		}
-
-		dob = &time
-		break
+	input := scanValue(scanner, "Name")
+	if input == nil {
+		fmt.Fprintln(os.Stderr, "Name cannot be empty")
 	}
 
-	fmt.Print("Address: ")
-	scanner.Scan()
-	input = strings.TrimSpace(scanner.Text())
-	if input != "" {
-		value := input
-		address = &value
-	}
-
-	fmt.Print("Phone: ")
-	scanner.Scan()
-	input = strings.TrimSpace(scanner.Text())
-	if input != "" {
-		value := input
-		phone = &value
-	}
-
-	fmt.Print("Email: ")
-	scanner.Scan()
-	input = strings.TrimSpace(scanner.Text())
-	if input != "" {
-		value := input
-		email = &value
-	}
+	dob = scanDate(scanner, "DOB (2006-01-02)")
+	address = scanValue(scanner, "Address")
+	phone = scanValue(scanner, "Phone")
+	email = scanValue(scanner, "Email")
 
 	fmt.Println()
 
