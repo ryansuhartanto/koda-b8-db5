@@ -85,10 +85,10 @@ func list(conn *pgx.Conn, scanner *bufio.Scanner) {
 		log.Fatal("Failed at collecting", err)
 	}
 
-	for index, entry := range entries {
+	for _, entry := range entries {
 		g, _ := goment.New(entry.UpdatedAt)
 
-		fmt.Printf("%d. (Last updated: %v)\n", index, g.FromNow())
+		fmt.Printf("ID: %d (Last updated: %v)\n", entry.Id, g.FromNow())
 		fmt.Printf("Name: %v\n", entry.Name)
 		if entry.Dob != nil {
 			fmt.Printf("DOB: %v\n", entry.Dob.Format("2006-01-02"))
