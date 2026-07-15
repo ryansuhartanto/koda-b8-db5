@@ -14,10 +14,10 @@ contact {
     timestamp updated_at
 
     string name
-    date dob
-    string address
-    string phone
-    string email
+    date? dob
+    string? address
+    string? phone
+    string? email
 }
 ```
 
