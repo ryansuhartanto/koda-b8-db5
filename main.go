@@ -8,6 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
+	"github.com/ryansuhartanto/koda-b8-db5/models"
 )
 
 func main() {
@@ -25,4 +26,8 @@ func main() {
 	}
 	defer conn.Close(context.Background())
 
+	rows, _ := conn.Query(context.Background(), `SELECT * FROM "contacts"`)
+	entries, _ := pgx.CollectRows(rows, pgx.RowToStructByName[models.Contact])
+
+	fmt.Println(entries)
 }
