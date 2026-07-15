@@ -76,6 +76,11 @@ loop:
 	}
 }
 
+func pause(scanner *bufio.Scanner) {
+	fmt.Print("Enter to continue... ")
+	scanner.Scan()
+}
+
 func list(conn *pgx.Conn, scanner *bufio.Scanner) {
 	rows, err := conn.Query(context.Background(), `SELECT * FROM "contacts"`)
 	if err != nil {
@@ -107,8 +112,7 @@ func list(conn *pgx.Conn, scanner *bufio.Scanner) {
 		fmt.Println()
 	}
 
-	fmt.Print("Enter to continue... ")
-	scanner.Scan()
+	pause(scanner)
 }
 
 func scanValue(scanner *bufio.Scanner, prefix string) *string {
@@ -145,8 +149,7 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 	input := scanValue(scanner, "Name")
 	if input == nil {
 		fmt.Fprintln(os.Stderr, "Name cannot be empty.")
-		fmt.Print("Enter to continue... ")
-		scanner.Scan()
+		pause(scanner)
 		return
 	}
 
@@ -177,8 +180,7 @@ func add(conn *pgx.Conn, scanner *bufio.Scanner) {
 	}
 
 	fmt.Println("Success!")
-	fmt.Print("Enter to continue... ")
-	scanner.Scan()
+	pause(scanner)
 }
 
 func selectId(conn *pgx.Conn, scanner *bufio.Scanner) *int64 {
@@ -209,8 +211,7 @@ func selectId(conn *pgx.Conn, scanner *bufio.Scanner) *int64 {
 
 	if !exists {
 		fmt.Println("ID does not exist.")
-		fmt.Print("Enter to continue... ")
-		scanner.Scan()
+		pause(scanner)
 		return nil
 	}
 
@@ -252,8 +253,7 @@ func edit(conn *pgx.Conn, scanner *bufio.Scanner) {
 		value := scanValue(scanner, "Name")
 		if value == nil {
 			fmt.Fprintln(os.Stderr, "Name cannot be empty.")
-			fmt.Print("Enter to continue... ")
-			scanner.Scan()
+			pause(scanner)
 			return
 		}
 		key = "name"
@@ -289,15 +289,13 @@ func edit(conn *pgx.Conn, scanner *bufio.Scanner) {
 	}
 
 	fmt.Println("Success!")
-	fmt.Print("Enter to continue... ")
-	scanner.Scan()
+	pause(scanner)
 
 	return
 
 no:
 	fmt.Println("Invalid selection!")
-	fmt.Print("Enter to continue... ")
-	scanner.Scan()
+	pause(scanner)
 }
 
 func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
@@ -320,6 +318,5 @@ func delete(conn *pgx.Conn, scanner *bufio.Scanner) {
 	}
 
 	fmt.Println("Success!")
-	fmt.Print("Enter to continue... ")
-	scanner.Scan()
+	pause(scanner)
 }
