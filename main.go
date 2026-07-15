@@ -259,7 +259,7 @@ func edit(conn *pgx.Conn, scanner *bufio.Scanner) {
 		key = "name"
 		args["value"] = *value
 	case 2:
-		value := scanValue(scanner, "DOB (2006-01-02)")
+		value := scanDate(scanner, "DOB (2006-01-02)")
 		key = "dob"
 		args["value"] = value
 	case 3:
