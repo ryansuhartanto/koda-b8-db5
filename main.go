@@ -193,7 +193,7 @@ func selectId(conn *pgx.Conn, scanner *bufio.Scanner) *int64 {
 
 		value, err := strconv.ParseInt(input, 10, 64)
 		if err != nil {
-			fmt.Fprint(os.Stderr, "Failed parse", err)
+			fmt.Fprintln(os.Stderr, "Failed parse", err)
 			continue
 		}
 
